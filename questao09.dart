@@ -1,14 +1,14 @@
-// Questão 9 - números do tipo 3025 = (30 + 25)^2
-// separa o número em duas partes de 2 dígitos, soma e eleva ao quadrado
+// Questão 9 - números de quatro dígitos que satisfazem
+// n = (parte esquerda + parte direita)²
 
 void main() {
-  for (int n = 1000; n <= 9999; n++) {
-    int esquerda = n ~/ 100;
-    int direita = n % 100;
-    int soma = esquerda + direita;
+  for (int numero = 1000; numero <= 9999; numero++) {
+    final esquerda = numero ~/ 100;
+    final direita = numero % 100;
+    final soma = esquerda + direita;
 
-    if (soma * soma == n) {
-      print('$n = $esquerda+$direita = $soma*$soma = $n');
+    if (soma * soma == numero) {
+      print('$numero = ($esquerda + $direita)² = $soma²');
     }
   }
 }

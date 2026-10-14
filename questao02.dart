@@ -1,45 +1,49 @@
-// Questão 2 - série S = 3^4! + 5^8! + 7^12! - 9^16! + 11^20! - 13^24! + 15^28! ...
+// Questão 2 - série: 3^4! + 5^8! + 7^12! - 9^16! + 11^20! - 13^24! + ...
 import 'dart:io';
 
 int fatorial(int n) {
-  int f = 1;
+  int resultado = 1;
   for (int i = 2; i <= n; i++) {
-    f *= i;
+    resultado *= i;
   }
-  return f;
+  return resultado;
 }
 
 void main() {
   stdout.write('Número de termos: ');
-  int n = int.parse(stdin.readLineSync()!);
+  final entrada = stdin.readLineSync();
+  final n = int.tryParse(entrada ?? '');
+
+  if (n == null || n < 1) {
+    print('Digite uma quantidade de termos maior que zero.');
+    return;
+  }
 
   BigInt soma = BigInt.zero;
 
   for (int i = 1; i <= n; i++) {
-    int base = 2 * i + 1; // 3, 5, 7, 9...
-    int expoente = fatorial(4 * i); // 4!, 8!, 12!...
+    final base = 2 * i + 1;
+    final expoente = fatorial(4 * i);
 
-    // do 3º termo em diante o expoente passa de 479 milhões
-    // e o computador não consegue calcular isso
+    // Os expoentes crescem muito rápido. A partir do terceiro termo,
+    // o cálculo exato torna-se impraticável com BigInt.pow.
     if (expoente > 100000) {
-      print('Parei no termo ${i - 1}: o termo $i ($base^$expoente) é grande demais pra calcular.');
-      break;
+      print('Não foi possível calcular o termo $i ($base^$expoente): '
+          'o expoente é grande demais para esta implementação.');
+      print('Soma parcial dos ${i - 1} termos anteriores:');
+      print(soma);
+      return;
     }
 
-    BigInt termo = BigInt.from(base).pow(expoente);
+    final termo = BigInt.from(base).pow(expoente);
 
-    // sinais: + + + - + - + ...
-    if (i > 3 && i % 2 == 0) {
-      soma -= termo;
-    } else {
+    // Os três primeiros termos são positivos; depois os sinais alternam.
+    if (i <= 3 || i.isOdd) {
       soma += termo;
+    } else {
+      soma -= termo;
     }
   }
 
-  String resultado = soma.toString();
-  if (resultado.length > 50) {
-    print('S é um número com ${resultado.length} dígitos, começando com ${resultado.substring(0, 20)}...');
-  } else {
-    print('S = $resultado');
-  }
+  print('Soma = $soma');
 }
